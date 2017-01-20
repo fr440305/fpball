@@ -29,16 +29,28 @@
 				this.position = {x:undefined, y:undefined};
 			}
 
-			Player.prototype.Update = function (game_status) {
-
+			Player.prototype.Update = function (game_status, istouched) {
+				var pnow = this.position;
+				var F = ()?():();
+				var V = F * ( 1000 / 30 ); 
+				var pnext = {x: pnow.x, y: pnow.y + (V * (1000 / 30))};
+				this.position = pnext; /* Iteration */
 			}
 
-			Player.SetVelocity = function (is_touched) {
+			var Render = function () {
+			}
+
+			Render.prototype.dot = function (r, x, y, color) {
+			}
+
+			Render.prototype.text = function (text) {
+			}
+
+			Render.prototype.Exec = function () {
 			}
 
 			var Eventer = function () {
 				this.istouched = false;
-
 			}
 
 			Eventer.prototype.Bind = function () {
@@ -75,9 +87,9 @@
 				return this.istouched;
 			}
 
-
-			var Game = function (eventer_obj) {
+			var Game = function (eventer_obj, player_obj) {
 				var Me = this;
+				this.player = player_obj;
 				this.eventer = eventer_obj; 
 				this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
 				this.eventer.Bind();
