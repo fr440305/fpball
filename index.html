@@ -53,7 +53,22 @@
 					Me.istouched = false;
 				}, false);
 				/* Bind keyboard events */
-				/* TODO ... */
+				document.addEventListener("keydown", function(e){
+					e.preventDefault();
+					e = e || windows.event;
+					e = e.keyCode || e.which;
+					if (e === 32) {
+						Me.istouched = true;
+					}
+				}, false);
+				document.addEventListener("keyup", function(e){
+					e.preventDefault();
+					e = e || windows.event;
+					e = e.keyCode || e.which;
+					if (e === 32) {
+						Me.istouched = false;
+					}
+				}, false);
 			}
 
 			Eventer.prototype.Touched = function () {
