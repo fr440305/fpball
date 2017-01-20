@@ -9,9 +9,9 @@
 					
 	<body> 
 		<canvas id='mega'></canvas> 
-		<script type='text/javascript' src='mega.js'> </script>
 		<script type='text/javascript' src='fpbird.js'></script>
 		<script>
+			/* initialize */
 			document.getElementById("mega").width = "500px";
 			document.getElementById("mega").height = "700px";
 			document.getElementById("mega").style.position = "absolute";
@@ -20,6 +20,60 @@
 			document.getElementById("mega").style.width = "500px";
 			document.getElementById("mega").style.height = "700px";
 			document.getElementById("mega").style.borderStyle = "dotted";
+
+			/*objects */
+
+			var Player = function () {
+				this.force = undefined;
+				this.velocity = undefined;
+				this.position = {x:undefined, y:undefined};
+			}
+
+			Player.prototype.Update = function (game_status) {
+
+			}
+
+			Player.SetVelocity = function (is_touched) {
+			}
+
+			var Eventer = function () {
+				this.istouched = false;
+
+			}
+
+			Eventer.prototype.Bind = function () {
+				/* Bind touch events */
+				var Me = this;
+				document.getElementById("mega").addEventListener("touchstart", function(e){
+					e.preventDefault();
+					Me.istouched = true;
+				}, false);
+				document.getElementById("mega").addEventListener("touchend", function(e){
+					e.preventDefault();
+					Me.istouched = false;
+				}, false);
+				/* Bind keyboard events */
+				/* TODO ... */
+			}
+
+			Eventer.prototype.Touched = function () {
+				return this.istouched;
+			}
+
+
+			var Game = function (eventer_obj) {
+				var Me = this;
+				this.eventer = eventer_obj; 
+				this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
+				this.eventer.Bind();
+			};
+
+
+			Game.prototype.loop = function () {
+				document.title = this.eventer.Touched();
+			}
+
+			new Game(new Eventer());
 
 		</script>
 	</body>
