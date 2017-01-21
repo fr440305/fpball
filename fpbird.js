@@ -11,16 +11,28 @@ document.getElementById("mega").style.borderStyle = "dotted";
 /*objects */
 
 var Player = function () {
-	this.force = undefined;
+	this.accel = undefined;
 	this.velocity = undefined;
-	this.position = {x:undefined, y:undefined};
+	this.position = {x:230, y:230};
 }
 
+Player.prototype.ValueOf = function (of_what) {
+	/* TODO - refactor by using table-driven method */
+	if (of_what === "position") {
+		return (this.position);
+	} else if (of_what === "velocity") {
+		return this.velocity;
+	}
+}
+
+
 Player.prototype.Update = function (game_status, istouched) {
+	/* i don't know what game_status means */
+	var delta_t = 30 / 1000;
+	this.accel = (istouched === true) ? (-150) : (100);
+	this.velocity = 100 * this.accel * delta_t; /* V = at */
 	var pnow = this.position;
-	//var F = ()?():();
-	var V = F * ( 1000 / 30 ); 
-	var pnext = {x: pnow.x, y: pnow.y + (V * (1000 / 30))};
+	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
 }
 
@@ -29,7 +41,11 @@ var Render = function () {
 	this.cx = this.canv.getContext('2d');
 }
 
-Render.prototype.dot = function (r, x, y, color) {
+Render.prototype.dot = function (color, x, y, r) {
+	this.cx.fillStyle = color;
+	this.cx.beginPath();
+	this.cx.arc(x, y, r, 0, 6.28, false);
+	this.cx.fill();
 }
 
 Render.prototype.text = function (text) {
@@ -39,13 +55,13 @@ Render.prototype.text = function (text) {
 
 Render.prototype.clear = function () {
 	this.cx.fillStyle = "rgb(255,0,0)";
-	console.log(this.canv.width.toString());
 	this.cx.fillRect(0, 0, 500, 700);
 }
 
-Render.prototype.Exec = function (player_status) {
+Render.prototype.Exec = function (player_position) {
 	this.clear();
-	this.text(player_status);
+	this.text (player_position.x.toString() +"|"+ player_position.y.toString());
+	this.dot ("green", player_position.x, player_position.y, 10);
 }
 
 var Eventer = function () {
@@ -98,12 +114,13 @@ var Game = function (eventer_obj, render_obj, player_obj) {
 
 Game.prototype.loop = function () {
 	/* Fetch the current status of the whole game */
-
+	
 	/* Analyze and Update the Game's Status */
+	this.player.Update(undefined, this.eventer.Touched());
 
 	/* Use Render() to Draw in canvas */
 	document.title = this.eventer.Touched();
-	this.render.Exec (this.eventer.Touched());
+	this.render.Exec (this.player.ValueOf("position"));
 }
 
 new Game(
@@ -111,5 +128,3 @@ new Game(
 	new Render(),
 	new Player()
 );
-
-
