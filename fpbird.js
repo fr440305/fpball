@@ -31,6 +31,9 @@ Player.prototype.Update = function (game_status, istouched) {
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-200) : (0);
 	this.accel = 100 + a_f; /* 50 is for gravity acceleration */
+	if (this.position.y >= 700 || this.position.y <= 0) {
+		this.velocity = -this.velocity;
+	}
 	this.velocity = this.velocity + this.accel * delta_t; /* V = at */
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
