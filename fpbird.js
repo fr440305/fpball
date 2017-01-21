@@ -1,6 +1,6 @@
 /* initialize */
-//document.getElementById("mega").width = "500px";
-//document.getElementById("mega").height = "700px";
+
+/*REFACTOR - TODO - fill the following codes into Game()->constructor() */
 document.getElementById("mega").style.position = "absolute";
 document.getElementById("mega").style.top = "0";
 document.getElementById("mega").style.left = "0";
