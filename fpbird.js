@@ -1,14 +1,7 @@
-/* initialize */
+/*fpbird.js
+ * Author - FireRain - Also the potential author of 'The Jounery of Floatess'
+ */
 
-/*REFACTOR - TODO - fill the following codes into Game()->constructor() */
-document.getElementById("mega").style.position = "absolute";
-document.getElementById("mega").style.top = "0";
-document.getElementById("mega").style.left = "0";
-document.getElementById("mega").style.width = "500px";
-document.getElementById("mega").style.height = "700px";
-document.getElementById("mega").style.borderStyle = "dotted";
-
-/*objects */
 
 var Player = function () {
 	this.accel = 0;
@@ -17,14 +10,8 @@ var Player = function () {
 }
 
 Player.prototype.ValueOf = function (of_what) {
-	/* TODO - refactor by using table-driven method */
-	if (of_what === "position") {
-		return (this.position);
-	} else if (of_what === "velocity") {
-		return this.velocity;
-	}
+	return { "position": this.position, "velocity": this.velocity }[of_what];
 }
-
 
 Player.prototype.Update = function (game_status, istouched) {
 	/* i don't know what game_status means */
@@ -107,6 +94,16 @@ Eventer.prototype.Touched = function () {
 }
 
 var Game = function (eventer_obj, render_obj, player_obj) {
+	if (document.getElementById('mega') === undefined) {
+		throw "can not find Mega!";
+		return 0;
+	}
+	document.getElementById("mega").style.position = "absolute";
+	document.getElementById("mega").style.top = "0";
+	document.getElementById("mega").style.left = "0";
+	document.getElementById("mega").style.width = "500px";
+	document.getElementById("mega").style.height = "700px";
+	document.getElementById("mega").style.borderStyle = "dotted";
 	var Me = this;
 	this.eventer = eventer_obj; 
 	this.player = player_obj;
