@@ -49,12 +49,12 @@ Render.prototype.dot = function (color, x, y, r) {
 }
 
 Render.prototype.text = function (text) {
-	this.cx.fillStyle = "green";
+	this.cx.fillStyle = "#66ccff";
 	this.cx.fillText (text.toString(), 10, 10);	
 }
 
 Render.prototype.clear = function () {
-	this.cx.fillStyle = "rgb(255,0,0)";
+	this.cx.fillStyle = "rgb(0,64,230)";
 	this.cx.fillRect(0, 0, 500, 700);
 }
 
