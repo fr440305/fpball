@@ -11,8 +11,8 @@ document.getElementById("mega").style.borderStyle = "dotted";
 /*objects */
 
 var Player = function () {
-	this.accel = undefined;
-	this.velocity = undefined;
+	this.accel = 0;
+	this.velocity = 0;
 	this.position = {x:230, y:230};
 }
 
@@ -29,8 +29,9 @@ Player.prototype.ValueOf = function (of_what) {
 Player.prototype.Update = function (game_status, istouched) {
 	/* i don't know what game_status means */
 	var delta_t = 30 / 1000;
-	this.accel = (istouched === true) ? (-150) : (100);
-	this.velocity = 100 * this.accel * delta_t; /* V = at */
+	var a_f = (istouched === true) ? (-200) : (0);
+	this.accel = 100 + a_f; /* 50 is for gravity acceleration */
+	this.velocity = this.velocity + this.accel * delta_t; /* V = at */
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
@@ -119,7 +120,6 @@ Game.prototype.loop = function () {
 	this.player.Update(undefined, this.eventer.Touched());
 
 	/* Use Render() to Draw in canvas */
-	document.title = this.eventer.Touched();
 	this.render.Exec (this.player.ValueOf("position"));
 }
 
