@@ -18,13 +18,21 @@ Player.prototype.Update = function (game_status, istouched) {
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-200) : (0);
 	this.accel = 100 + a_f; /* 50 is for gravity acceleration */
-	if (this.position.y >= 700 || this.position.y <= 0) {
+	if (this.position.y <= 0) {
+		this.position.y = 0;
+		this.velocity = -this.velocity;
+	}
+	if (this.position.y >= 700) {
+		this.position.y = 700;
 		this.velocity = -this.velocity;
 	}
 	this.velocity = this.velocity + this.accel * delta_t; /* V = at */
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
+}
+
+var Walls = function () {
 }
 
 var Render = function () {
@@ -93,7 +101,7 @@ Eventer.prototype.Touched = function () {
 	return this.istouched;
 }
 
-var Game = function (eventer_obj, render_obj, player_obj) {
+var Game = function (eventer_obj, render_obj, player_obj, walls_obj) {
 	if (document.getElementById('mega') === undefined) {
 		throw "can not find Mega!";
 		return 0;
@@ -108,6 +116,7 @@ var Game = function (eventer_obj, render_obj, player_obj) {
 	this.eventer = eventer_obj; 
 	this.player = player_obj;
 	this.render = render_obj;
+	this.walls = walls_obj;
 	this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
 	this.eventer.Bind();
 };
@@ -126,5 +135,6 @@ Game.prototype.loop = function () {
 new Game(
 	new Eventer(),
 	new Render(),
-	new Player()
+	new Player(),
+	new Walls()
 );
