@@ -16,7 +16,6 @@ Player.prototype.ValueOf = function (of_what) {
 
 Player.prototype.Update = function (game_status, istouched, walls) {
 	/* i don't know what game_status means */
-	this.player_stat = walls; /*just for test */
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-200) : (0);
 	this.accel = 100 + a_f; /* 50 is for gravity acceleration */
@@ -37,16 +36,26 @@ Player.prototype.Update = function (game_status, istouched, walls) {
 var Walls = function () {
 	this.wall_stat = undefined;
 	this.walls_group = [];
+	this.newWall();
+}
+
+Walls.prototype.newWall = function () {
+	var newall = { x: 500, y: 0, b: 300 };
+	this.walls_group.push(newall);
 }
 
 Walls.prototype.Update = function () {
+	this.moveWall();
 }
 
 Walls.prototype.moveWall = function () {
+	for (var i = 0; i < this.walls_group.length; i++) {
+		this.walls_group[i].x -=1;
+	}
 }
 
 Walls.prototype.GetWalls = function () {
-	return "walls";
+	return this.walls_group;
 }
 
 var Render = function () {
@@ -71,10 +80,14 @@ Render.prototype.clear = function () {
 	this.cx.fillRect(0, 0, 500, 700);
 }
 
-Render.prototype.Exec = function (player_position, player_status) {
+Render.prototype.Exec = function (player_position, player_status, walls_group) {
 	this.clear();
 	this.text (player_status +'//'+player_position.x.toString() +","+ player_position.y.toString());
 	this.dot ("green", player_position.x, player_position.y, 10);
+	
+	for (var i = 0; i < walls_group.length; i++) {
+		this.dot ("red", walls_group[i].x, walls_group[i].y, 20);
+	}
 }
 
 var Eventer = function () {
@@ -141,9 +154,10 @@ Game.prototype.loop = function () {
 	
 	/* Analyze and Update the Game's Status */
 	this.player.Update(undefined, this.eventer.Touched(), this.walls.GetWalls());
+	this.walls.Update();
 
 	/* Use Render() to Draw in canvas */
-	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('status'));
+	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('status'), this.walls.GetWalls());
 }
 
 new Game(
