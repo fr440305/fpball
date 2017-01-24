@@ -34,23 +34,28 @@ Player.prototype.Update = function (game_status, istouched, walls) {
 }
 
 var Walls = function () {
-	this.wall_stat = undefined;
+	this.wall_stat = 0;
 	this.walls_group = [];
-	this.newWall();
 }
 
 Walls.prototype.newWall = function () {
-	var newall = { x: 500, y: 0, b: 300 };
+	var newall = { x: 500, y: 0, b: Math.floor(Math.random()*500) };
 	this.walls_group.push(newall);
 }
 
 Walls.prototype.Update = function () {
+	if (this.wall_stat % 50 === 0) {
+		/* .. */
+		this.newWall();
+		this.wall_stat = 0;
+	}
+	this.wall_stat ++;
 	this.moveWall();
 }
 
 Walls.prototype.moveWall = function () {
 	for (var i = 0; i < this.walls_group.length; i++) {
-		this.walls_group[i].x -=1;
+		this.walls_group[i].x -= 10;
 	}
 }
 
