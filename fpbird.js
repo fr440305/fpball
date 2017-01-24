@@ -36,6 +36,13 @@ Player.prototype.Update = function (game_status, istouched, walls) {
 
 var Walls = function () {
 	this.wall_stat = undefined;
+	this.walls_group = [];
+}
+
+Walls.prototype.Update = function () {
+}
+
+Walls.prototype.moveWall = function () {
 }
 
 Walls.prototype.GetWalls = function () {
