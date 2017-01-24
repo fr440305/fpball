@@ -138,13 +138,15 @@ var Game = function (eventer_obj, render_obj, player_obj, walls_obj) {
 	if (document.getElementById('mega') === undefined) {
 		throw "can not find Mega!";
 		return 0;
+	} else {
+		var mega = document.getElementById('mega');
+		mega.style.position = "absolute";
+		mega.style.top = "0";
+		mega.style.left = "0";
+		mega.style.width = mega.width;
+		mega.style.height = mega.height;
+		mega.style.borderStyle = "dotted";
 	}
-	document.getElementById("mega").style.position = "absolute";
-	document.getElementById("mega").style.top = "0";
-	document.getElementById("mega").style.left = "0";
-	document.getElementById("mega").style.width = "500px";
-	document.getElementById("mega").style.height = "700px";
-	document.getElementById("mega").style.borderStyle = "dotted";
 	var Me = this;
 	this.eventer = eventer_obj; 
 	this.player = player_obj;
