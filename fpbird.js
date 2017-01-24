@@ -81,12 +81,13 @@ Render.prototype.clear = function () {
 }
 
 Render.prototype.Exec = function (player_position, player_status, walls_group) {
+	/* TODO - refactor this function. shrink the arguments to a big 'render object' */
 	this.clear();
 	this.text (player_status +'//'+player_position.x.toString() +","+ player_position.y.toString());
 	this.dot ("green", player_position.x, player_position.y, 10);
 	
 	for (var i = 0; i < walls_group.length; i++) {
-		this.dot ("red", walls_group[i].x, walls_group[i].y, 20);
+		this.dot ("red", walls_group[i].x, walls_group[i].b, 20);
 	}
 }
 
