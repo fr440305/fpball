@@ -15,7 +15,6 @@ Player.prototype.ValueOf = function (of_what) {
 }
 
 Player.prototype.Update = function (game_status, istouched, walls) {
-	/* i don't know what game_status means */
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-800) : (0);
 	this.accel = 400 + a_f; /* 400 is for gravity acceleration */
@@ -90,7 +89,6 @@ Render.prototype.Exec = function (player_position, player_status, walls_group) {
 	this.clear();
 	this.text (player_status +'//'+player_position.x.toString() +","+ player_position.y.toString());
 	this.dot ("green", player_position.x, player_position.y, 10);
-	
 	for (var i = 0; i < walls_group.length; i++) {
 		this.dot ("red", walls_group[i].x, walls_group[i].b, 20);
 	}
