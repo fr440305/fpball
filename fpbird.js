@@ -14,7 +14,7 @@ Player.prototype.ValueOf = function (of_what) {
 	return { "position": this.position, "velocity": this.velocity, "status": this.player_stat }[of_what];
 }
 
-Player.prototype.Update = function (game_status, istouched, walls) {
+Player.prototype.Update = function (game_status, istouched, stars) {
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-800) : (0);
 	this.accel = 400 + a_f; /* 400 is for gravity acceleration */
@@ -32,34 +32,34 @@ Player.prototype.Update = function (game_status, istouched, walls) {
 	this.position = pnext; /* Iteration */
 }
 
-var Walls = function () {
-	this.wall_stat = 0;
-	this.walls_group = [];
+var Stars = function () {
+	this.stars_stat = 0;
+	this.stars_group = [];
 }
 
-Walls.prototype.newWall = function () {
-	var newall = { x: 500, y: 0, b: Math.floor(Math.random()*500) };
-	this.walls_group.push(newall);
+Stars.prototype.newStar = function () {
+	var newstar = { x: 500, y: Math.floor(Math.random()*500) };
+	this.stars_group.push(newstar);
 }
 
-Walls.prototype.Update = function () {
-	if (this.wall_stat % 50 === 0) {
+Stars.prototype.Update = function () {
+	if (this.stars_stat % 50 === 0) {
 		/* .. */
-		this.newWall();
-		this.wall_stat = 0;
+		this.newStar();
+		this.stars_stat = 0;
 	}
-	this.wall_stat ++;
-	this.moveWall();
+	this.stars_stat ++;
+	this.moveStar();
 }
 
-Walls.prototype.moveWall = function () {
-	for (var i = 0; i < this.walls_group.length; i++) {
-		this.walls_group[i].x -= 4;
+Stars.prototype.moveStar = function () {
+	for (var i = 0; i < this.stars_group.length; i++) {
+		this.stars_group[i].x -= 4;
 	}
 }
 
-Walls.prototype.GetWalls = function () {
-	return this.walls_group;
+Stars.prototype.GetStars = function () {
+	return this.stars_group;
 }
 
 var Render = function () {
@@ -90,7 +90,7 @@ Render.prototype.Exec = function (player_position, player_status, walls_group) {
 	this.text (player_status +'//'+player_position.x.toString() +","+ player_position.y.toString());
 	this.dot ("green", player_position.x, player_position.y, 10);
 	for (var i = 0; i < walls_group.length; i++) {
-		this.dot ("red", walls_group[i].x, walls_group[i].b, 20);
+		this.dot ("red", walls_group[i].x, walls_group[i].y, 20);
 	}
 }
 
@@ -159,16 +159,16 @@ Game.prototype.loop = function () {
 	/* Fetch the current status of the whole game */
 	
 	/* Analyze and Update the Game's Status */
-	this.player.Update(undefined, this.eventer.Touched(), this.walls.GetWalls());
+	this.player.Update(undefined, this.eventer.Touched(), this.walls.GetStars());
 	this.walls.Update();
 
 	/* Use Render() to Draw in canvas */
-	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('status'), this.walls.GetWalls());
+	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('status'), this.walls.GetStars());
 }
 
 new Game(
 	new Eventer(),
 	new Render(),
 	new Player(),
-	new Walls()
+	new Stars()
 );
