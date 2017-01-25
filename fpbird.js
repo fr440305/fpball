@@ -67,6 +67,9 @@ Stars.prototype.Update = function () {
 	}
 	this.stars_stat ++;
 	this.moveStar();
+	for (var i = 0; this.stars_group[i].x <= 0; i++) {
+		this.DelStar(i);
+	}
 }
 
 Stars.prototype.DelStar = function (index) {
