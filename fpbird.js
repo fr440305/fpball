@@ -5,16 +5,23 @@
 
 var Player = function () {
 	this.player_stat = undefined;
+	this.score = 0;
 	this.accel = 0;
 	this.velocity = 0;
 	this.position = {x:42, y:230};
 }
 
 Player.prototype.ValueOf = function (of_what) {
-	return { "position": this.position, "velocity": this.velocity, "status": this.player_stat }[of_what];
+	return {
+		"position": this.position,
+		"velocity": this.velocity,
+		"status": this.player_stat,
+		"score": this.score
+	}[of_what];
 }
 
 Player.prototype.Update = function (game_status, istouched, stars) {
+	/*move player */
 	var delta_t = 30 / 1000;
 	var a_f = (istouched === true) ? (-800) : (0);
 	this.accel = 400 + a_f; /* 400 is for gravity acceleration */
@@ -30,6 +37,16 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
+	/*collision detection between player and stars */
+	var dx, dy;
+	for (var i = 0; i < stars.length; i++) {
+		dx = stars[i].x - this.position.x;
+		dy = stars[i].y - this.position.y;
+		if ( dx * dx + dy * dy <= 900 ) {
+			this.score ++;
+			return i;
+		}
+	}
 }
 
 var Stars = function () {
@@ -50,6 +67,10 @@ Stars.prototype.Update = function () {
 	}
 	this.stars_stat ++;
 	this.moveStar();
+}
+
+Stars.prototype.DelStar = function (index) {
+	this.stars_group.splice (index, 1);
 }
 
 Stars.prototype.moveStar = function () {
@@ -84,13 +105,13 @@ Render.prototype.clear = function () {
 	this.cx.fillRect(0, 0, 500, 700);
 }
 
-Render.prototype.Exec = function (player_position, player_status, walls_group) {
+Render.prototype.Exec = function (player_position, player_score, stars_group) {
 	/* TODO - refactor this function. shrink the arguments to a big 'render object' */
 	this.clear();
-	this.text (player_status +'//'+player_position.x.toString() +","+ player_position.y.toString());
+	this.text (player_score +'//'+player_position.x.toString() +","+ player_position.y.toString());
 	this.dot ("green", player_position.x, player_position.y, 10);
-	for (var i = 0; i < walls_group.length; i++) {
-		this.dot ("red", walls_group[i].x, walls_group[i].y, 20);
+	for (var i = 0; i < stars_group.length; i++) {
+		this.dot ("red", stars_group[i].x, stars_group[i].y, 20);
 	}
 }
 
@@ -132,7 +153,7 @@ Eventer.prototype.Touched = function () {
 	return this.istouched;
 }
 
-var Game = function (eventer_obj, render_obj, player_obj, walls_obj) {
+var Game = function (eventer_obj, render_obj, player_obj, stars_obj) {
 	if (document.getElementById('mega') === undefined) {
 		throw "can not find Mega!";
 		return 0;
@@ -149,7 +170,7 @@ var Game = function (eventer_obj, render_obj, player_obj, walls_obj) {
 	this.eventer = eventer_obj; 
 	this.player = player_obj;
 	this.render = render_obj;
-	this.walls = walls_obj;
+	this.stars = stars_obj;
 	this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
 	this.eventer.Bind();
 };
@@ -157,13 +178,14 @@ var Game = function (eventer_obj, render_obj, player_obj, walls_obj) {
 
 Game.prototype.loop = function () {
 	/* Fetch the current status of the whole game */
-	
+	var eaten_star = this.player.Update(undefined, this.eventer.Touched(), this.stars.GetStars());
 	/* Analyze and Update the Game's Status */
-	this.player.Update(undefined, this.eventer.Touched(), this.walls.GetStars());
-	this.walls.Update();
-
+	if (eaten_star !== undefined) {
+		this.stars.DelStar(eaten_star);
+	}
+	this.stars.Update();
 	/* Use Render() to Draw in canvas */
-	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('status'), this.walls.GetStars());
+	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('score'), this.stars.GetStars());
 }
 
 new Game(
