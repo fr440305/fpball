@@ -166,6 +166,7 @@ var Game = function (eventer_obj, render_obj, player_obj, stars_obj, walls_obj) 
 		throw "can not find Mega!";
 		return 0;
 	} else {
+		document.body.style.backgroundColor = "black";
 		var mega = document.getElementById('mega');
 		mega.style.position = "absolute";
 		mega.style.top = "0";
