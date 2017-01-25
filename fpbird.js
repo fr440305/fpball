@@ -1,4 +1,5 @@
 /*fpbird.js
+this.velocity /= 2;
  * Author - FireRain - Also the potential author of 'The Jounery of Floatess'
  */
 
@@ -43,6 +44,7 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 		dx = stars[i].x - this.position.x;
 		dy = stars[i].y - this.position.y;
 		if ( dx * dx + dy * dy <= 900 ) {
+			this.velocity /= 2;
 			this.score ++;
 			return i;
 		}
@@ -104,17 +106,17 @@ Render.prototype.text = function (text) {
 }
 
 Render.prototype.clear = function () {
-	this.cx.fillStyle = "rgb(0,64,230)";
+	this.cx.fillStyle = "rgb(0,23,64)";
 	this.cx.fillRect(0, 0, 500, 700);
 }
 
 Render.prototype.Exec = function (player_position, player_score, stars_group) {
 	/* TODO - refactor this function. shrink the arguments to a big 'render object' */
 	this.clear();
-	this.text (player_score +'//'+player_position.x.toString() +","+ player_position.y.toString());
-	this.dot ("green", player_position.x, player_position.y, 10);
+	this.text (player_score.toString());
+	this.dot ("#3366ff", player_position.x, player_position.y, 10);
 	for (var i = 0; i < stars_group.length; i++) {
-		this.dot ("red", stars_group[i].x, stars_group[i].y, 20);
+		this.dot ("#ccff33", stars_group[i].x, stars_group[i].y, 20);
 	}
 }
 
@@ -156,7 +158,10 @@ Eventer.prototype.Touched = function () {
 	return this.istouched;
 }
 
-var Game = function (eventer_obj, render_obj, player_obj, stars_obj) {
+var Walls = function () {
+}
+
+var Game = function (eventer_obj, render_obj, player_obj, stars_obj, walls_obj) {
 	if (document.getElementById('mega') === undefined) {
 		throw "can not find Mega!";
 		return 0;
@@ -174,10 +179,10 @@ var Game = function (eventer_obj, render_obj, player_obj, stars_obj) {
 	this.player = player_obj;
 	this.render = render_obj;
 	this.stars = stars_obj;
+	this.walls = walls_obj;
 	this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
 	this.eventer.Bind();
 };
-
 
 Game.prototype.loop = function () {
 	/* Fetch the current status of the whole game */
@@ -195,5 +200,6 @@ new Game(
 	new Eventer(),
 	new Render(),
 	new Player(),
-	new Stars()
+	new Stars(),
+	new Walls()
 );
