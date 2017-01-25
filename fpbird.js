@@ -17,8 +17,8 @@ Player.prototype.ValueOf = function (of_what) {
 Player.prototype.Update = function (game_status, istouched, walls) {
 	/* i don't know what game_status means */
 	var delta_t = 30 / 1000;
-	var a_f = (istouched === true) ? (-200) : (0);
-	this.accel = 100 + a_f; /* 50 is for gravity acceleration */
+	var a_f = (istouched === true) ? (-800) : (0);
+	this.accel = 400 + a_f; /* 400 is for gravity acceleration */
 	if (this.position.y <= 0) {
 		this.position.y = 0;
 		this.velocity = -this.velocity;
@@ -55,7 +55,7 @@ Walls.prototype.Update = function () {
 
 Walls.prototype.moveWall = function () {
 	for (var i = 0; i < this.walls_group.length; i++) {
-		this.walls_group[i].x -= 10;
+		this.walls_group[i].x -= 4;
 	}
 }
 
