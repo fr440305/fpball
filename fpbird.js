@@ -7,7 +7,7 @@ var Player = function () {
 	this.player_stat = undefined;
 	this.accel = 0;
 	this.velocity = 0;
-	this.position = {x:230, y:230};
+	this.position = {x:42, y:230};
 }
 
 Player.prototype.ValueOf = function (of_what) {
