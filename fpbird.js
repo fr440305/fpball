@@ -34,7 +34,7 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 		this.position.y = 700;
 		this.velocity = -this.velocity;
 	}
-	this.velocity = this.velocity + this.accel * delta_t; /* V = at */
+	this.velocity = this.velocity + this.accel * delta_t; /* V = V0 + at */
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
@@ -49,6 +49,7 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 			return i;
 		}
 	}
+	/*TODO - collision detection between player and walls */
 }
 
 var Stars = function () {
