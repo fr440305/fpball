@@ -93,6 +93,30 @@ var Render = function () {
 	this.cx = this.canv.getContext('2d');
 }
 
+Render.prototype.star = function (color, x, y, r) {
+	this.cx.fillStyle = color;
+	this.cx.strokeStyle = color;
+	this.cx.beginPath();
+	var prev_x = undefined;
+	var prev_y = undefined;
+	for (var zeta_ = 0; zeta_ < 360; zeta_ ++) {
+		var zeta = zeta_ / 180 * Math.PI;
+		r_t = (Math.sin(zeta * 5)/4 + 1) * r
+		x_t = x + r_t * Math.cos(zeta)
+		y_t = y + r_t * Math.sin(zeta)
+		if (prev_x === undefined) {
+			this.cx.moveTo(x_t, y_t);
+		} else {
+			this.cx.lineTo(x_t, y_t);
+			this.cx.stroke();
+		}
+		prev_x = x_t;
+		prev_y = y_t;
+
+	}
+	this.cx.fill();
+}
+
 Render.prototype.dot = function (color, x, y, r) {
 	this.cx.fillStyle = color;
 	this.cx.beginPath();
@@ -116,7 +140,7 @@ Render.prototype.Exec = function (player_position, player_score, stars_group) {
 	this.text (player_score.toString());
 	this.dot ("#3366ff", player_position.x, player_position.y, 10);
 	for (var i = 0; i < stars_group.length; i++) {
-		this.dot ("#ccff33", stars_group[i].x, stars_group[i].y, 20);
+		this.star ("#ccff33", stars_group[i].x, stars_group[i].y, 20);
 	}
 }
 
