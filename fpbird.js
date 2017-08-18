@@ -1,6 +1,6 @@
-/*fpbird.js
-this.velocity /= 2;
- * Author - FireRain - Also the potential author of 'The Jounery of Floatess'
+/**
+ * fpbird.js
+ * Author - Huoyu
  */
 
 
