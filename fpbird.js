@@ -140,7 +140,7 @@ Render.prototype.Exec = function (player_position, player_score, stars_group) {
 	this.text (player_score.toString());
 	this.dot ("#3366ff", player_position.x, player_position.y, 10);
 	for (var i = 0; i < stars_group.length; i++) {
-		this.star ("#ccff33", stars_group[i].x, stars_group[i].y, 20);
+		this.dot("#ccff33", stars_group[i].x, stars_group[i].y, 20);
 	}
 }
 
