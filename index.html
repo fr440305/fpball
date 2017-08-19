@@ -30,14 +30,14 @@
 <canvas id='mega' width='500px' height='700px'></canvas> 
 
 <div id='_GAME_WIN_'>
-	<p style='text-align:center;'> 浣犺鍜岄浄鐙粨濠氫簡 </p>
-	<p style='text-align:center;'> ~ 鎭枩 ~ </p>
+	<p style='text-align:center;'> 动画特效 </p>
+	<p style='text-align:center;'> ~ 恭喜 ~ </p>
 </div>
 
 <div id='_GAME_OVER_'>
-	<p style='text-align:center;font-size:48px;'><b>~ Game Over ~ </br>  浠栭渶瑕佸崄棰楁槦鏄?/b></p>
-	<p style='font-size:16px;text-align:center;'>閬楀け鐨勬槦鏄熷繀椤诲皯浜庡洓涓?/p>
-	<p style='font-size:16px;text-align:center;'>鍒锋柊涓€涓嬶紝閲嶆柊鎸戞垬</p>
+	<p style='text-align:center;font-size:48px;'><b>~ Game Over ~ </br>  他需要十颗星星 </b></p>
+	<p style='font-size:16px;text-align:center;'>  遗失的星星必须少于四个  </p>
+	<p style='font-size:16px;text-align:center;'>  刷新一下，重新挑战  </p>
 </div>
 
 <script type='text/javascript'>
@@ -143,7 +143,7 @@ var Render = function () {
 Render.prototype.star = function (color, x, y, r) {
 	this.cx.fillStyle = color;
 	this.cx.font = '45px Arial';
-	this.cx.fillText ('鈽?, x, y);	
+	this.cx.fillText ('★', x, y);	
 /*
 	this.cx.fillStyle = color;
 	this.cx.strokeStyle = color;
@@ -187,7 +187,7 @@ Render.prototype.clear = function () {
 	this.cx.fillRect(0, 0, 500, 700);
 }
 Render.prototype.ShowMissed = function (m) {
-	this.text("閬楀け : "+m.toString(), 30, 30)
+	this.text("Miss : "+m.toString(), 30, 30)
 }
 
 Render.prototype.Exec = function (player_position, player_score, stars_group) {
