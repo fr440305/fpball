@@ -1,3 +1,55 @@
+
+<!doctype html>
+
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<meta name='viewport' content='width=500px'>
+<style>
+
+
+#_GAME_OVER_ {
+	position: absolute;
+	top: 100px;
+	left: 25px;
+	color: #ff0;
+	width: 500px; 
+	display: none;
+}
+
+#_GAME_WIN_ {
+	width: 500px; 
+	position: absolute;
+	top: -300px;
+	font-size: 48px;
+	color: #0ff;
+}
+
+button {
+	font-size: 18px;
+}
+img {
+	display: none;
+}
+</style> <title> FpLiang </title> </head>
+					
+<body> 
+
+<canvas id='mega' width='500px' height='700px'></canvas> 
+<img id='_GAME_CHAR_' src='https://raw.githubusercontent.com/fr440305/fpball/gh-pages/img/char.png'></img>
+<img id='_GAME_SEN_0' src='https://raw.githubusercontent.com/fr440305/fpball/gh-pages/img/sen1.png'></img>
+<img id='_GAME_SEN_1' src='https://raw.githubusercontent.com/fr440305/fpball/gh-pages/img/sen2.png'></img>
+<img id='_GAME_SEN_2' src='https://raw.githubusercontent.com/fr440305/fpball/gh-pages/img/sen3.png'></img>
+<img id='_GAME_SEN_3' src='https://raw.githubusercontent.com/fr440305/fpball/gh-pages/img/sen4.png'></img>
+
+<div id='_GAME_OVER_'>
+	<p style='text-align:center;font-size:48px;'><b>~ Game Over ~ </br>  他需要十颗星星</b></p>
+	<p style='font-size:16px;text-align:center;'>遗失的星星必须少于四个</p>
+	<p style='font-size:16px;text-align:center;'>  <button id='_GAME_RETRY_'>戳我一下，重新挑战</button> </p>
+</div>
+
+<script type='text/javascript'>
+
 /**
  * fpbird.js
  * Author - Huoyu
@@ -9,7 +61,7 @@ var Player = function () {
 	this.score = 0;
 	this.accel = 0;
 	this.velocity = 0;
-	this.position = {x:42, y:230};
+	this.position = {x:142, y:230};
 }
 
 Player.prototype.ValueOf = function (of_what) {
@@ -34,7 +86,7 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 		this.position.y = 700;
 		this.velocity = -this.velocity;
 	}
-	this.velocity = this.velocity + this.accel * delta_t; /* V = V0 + at */
+	this.velocity = this.velocity + this.accel * delta_t; /* V = at */
 	var pnow = this.position;
 	var pnext = {x: pnow.x, y: pnow.y + (this.velocity * delta_t)};
 	this.position = pnext; /* Iteration */
@@ -43,22 +95,22 @@ Player.prototype.Update = function (game_status, istouched, stars) {
 	for (var i = 0; i < stars.length; i++) {
 		dx = stars[i].x - this.position.x;
 		dy = stars[i].y - this.position.y;
-		if ( dx * dx + dy * dy <= 900 ) {
+		if ( dx * dx + dy * dy <= 1600 ) {
 			this.velocity /= 2;
 			this.score ++;
 			return i;
 		}
 	}
-	/*TODO - collision detection between player and walls */
 }
 
 var Stars = function () {
+	this.missed = 0;
 	this.stars_stat = 0;
 	this.stars_group = [];
 }
 
 Stars.prototype.newStar = function () {
-	var newstar = { x: 500, y: Math.floor(Math.random()*500) };
+	var newstar = { x: 500, y: Math.floor(Math.random()*400)+50 };
 	this.stars_group.push(newstar);
 }
 
@@ -71,8 +123,10 @@ Stars.prototype.Update = function () {
 	this.stars_stat ++;
 	this.moveStar();
 	for (var i = 0; this.stars_group[i].x <= 0; i++) {
+		this.missed ++;
 		this.DelStar(i);
 	}
+	return this.missed;
 }
 
 Stars.prototype.DelStar = function (index) {
@@ -90,18 +144,23 @@ Stars.prototype.GetStars = function () {
 }
 
 var Render = function () {
+	this.counter = 0;
 	this.canv = document.getElementById ("mega");	
 	this.cx = this.canv.getContext('2d');
 }
 
 Render.prototype.star = function (color, x, y, r) {
 	this.cx.fillStyle = color;
+	this.cx.font = '45px Arial';
+	this.cx.fillText ('★', x, y);	
+/*
+	this.cx.fillStyle = color;
 	this.cx.strokeStyle = color;
 	this.cx.beginPath();
 	var prev_x = undefined;
 	var prev_y = undefined;
 	for (var zeta_ = 0; zeta_ < 360; zeta_ ++) {
-		var zeta = zeta_ / 180 * Math.PI;
+		var zeta = (zeta_ - 18) / 180 * Math.PI;
 		r_t = (Math.sin(zeta * 5)/4 + 1) * r
 		x_t = x + r_t * Math.cos(zeta)
 		y_t = y + r_t * Math.sin(zeta)
@@ -116,6 +175,7 @@ Render.prototype.star = function (color, x, y, r) {
 
 	}
 	this.cx.fill();
+	*/
 }
 
 Render.prototype.dot = function (color, x, y, r) {
@@ -125,24 +185,50 @@ Render.prototype.dot = function (color, x, y, r) {
 	this.cx.fill();
 }
 
-Render.prototype.text = function (text) {
+Render.prototype.text = function (text, x, y) {
 	this.cx.fillStyle = "#66ccff";
-	this.cx.fillText (text.toString(), 10, 10);	
+	this.cx.font = '30px Arial';
+	this.cx.fillText (text.toString(), x, y);	
 }
 
-Render.prototype.clear = function () {
-	this.cx.fillStyle = "rgb(0,23,64)";
+Render.prototype.FullRect = function (r, g, b) {
+	this.cx.fillStyle = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
 	this.cx.fillRect(0, 0, 500, 700);
+}
+Render.prototype.clear = function () {
+	this.FullRect(0, 23, 64);
+}
+Render.prototype.ShowPlayer = function (x, y) {
+	var img = _GAME_CHAR_;
+	this.counter = (this.counter + 1) % 50;
+	this.cx.drawImage(img, x-100, y-100, 200, 200)
+	if (this.counter >= 25) {
+		this.dot("#ccff33", x, y, 40)
+	}
+}
+
+Render.prototype.ShowMissed = function (m) {
+	this.text("遗失 : "+m.toString(), 30, 30)
 }
 
 Render.prototype.Exec = function (player_position, player_score, stars_group) {
 	/* TODO - refactor this function. shrink the arguments to a big 'render object' */
 	this.clear();
-	this.text (player_score.toString());
-	this.dot ("#3366ff", player_position.x, player_position.y, 10);
+	this.text (player_score.toString(), player_position.x + 150, player_position.y);
+	this.ShowPlayer(player_position.x, player_position.y);
+	//this.dot ("#3366ff", player_position.x, player_position.y, 10);
 	for (var i = 0; i < stars_group.length; i++) {
-		this.dot("#ccff33", stars_group[i].x, stars_group[i].y, 20);
+		this.star("#ccff33", stars_group[i].x, stars_group[i].y, 20);
 	}
+}
+
+Render.prototype.GameOver = function () {
+	_GAME_OVER_.style.display = 'block';
+}
+
+Render.prototype.WinStoryBoard = function (n) {
+	var img = document.getElementById("_GAME_SEN_" + n.toString());
+	this.cx.drawImage(img, 0, 0, 500, 700);
 }
 
 var Eventer = function () {
@@ -201,6 +287,7 @@ var Game = function (eventer_obj, render_obj, player_obj, stars_obj, walls_obj) 
 		mega.style.borderStyle = "dotted";
 	}
 	var Me = this;
+	this.int_counter = 0;
 	this.eventer = eventer_obj; 
 	this.player = player_obj;
 	this.render = render_obj;
@@ -208,18 +295,58 @@ var Game = function (eventer_obj, render_obj, player_obj, stars_obj, walls_obj) 
 	this.walls = walls_obj;
 	this.timerid = setInterval(function(){Me.loop()}, /*frame_rate->*/30);
 	this.eventer.Bind();
+	this.win = false;
+	this.over = false;
 };
 
 Game.prototype.loop = function () {
+	if (this.over === true) {
+		this.loseloop();
+		return;
+	}
+	if (this.win === true) {
+		//XXX ^ hehe...
+		this.winloop();
+		return;
+	}
 	/* Fetch the current status of the whole game */
 	var eaten_star = this.player.Update(undefined, this.eventer.Touched(), this.stars.GetStars());
 	/* Analyze and Update the Game's Status */
 	if (eaten_star !== undefined) {
 		this.stars.DelStar(eaten_star);
 	}
-	this.stars.Update();
+	var miss = this.stars.Update();
+	if (this.player.ValueOf('score') >= 10) {
+		this.win = true;
+		_GAME_WIN_.style.display = true;
+		return;
+	}
+	if (miss >= 4) {
+		this.over = true;
+		return;
+	}
 	/* Use Render() to Draw in canvas */
 	this.render.Exec (this.player.ValueOf("position"), this.player.ValueOf('score'), this.stars.GetStars());
+	this.render.ShowMissed(miss);
+}
+
+Game.prototype.loseloop = function () {
+	this.render.GameOver();
+}
+
+Game.prototype.winloop = function () {
+	this.int_counter ++;
+	if (this.int_counter >0 && this.int_counter < 100) {
+		this.render.FullRect(255, 255, 255);
+	} else if (this.int_counter >= 100 && this.int_counter < 200) {
+		this.render.WinStoryBoard(0);
+	} else if (this.int_counter >= 200 && this.int_counter < 300) {
+		this.render.WinStoryBoard(1);
+	} else if (this.int_counter >= 300 && this.int_counter < 400) {
+		this.render.WinStoryBoard(2);
+	} else {
+		this.render.WinStoryBoard(3);
+	}
 }
 
 new Game(
@@ -229,3 +356,12 @@ new Game(
 	new Stars(),
 	new Walls()
 );
+		
+_GAME_RETRY_.onclick = function () {
+	window.location.reload();
+}
+
+</script> </body> </html>
+>>>>>>> e5d4d49f56d48c68696bc4079058779a4be3b4f0
+
+
